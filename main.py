@@ -13,27 +13,29 @@ def display_board(board):
             print("\t     -----------------------")
     pass
 
+class SpaceFilledError(Exception):
+    pass
+
 # Function to get player's move
-def get_player_move():
+def get_player_move(board):
     while True:
         try:
-            move = input("Choose a position: (Format: 1A, 2B, 3C, etc.)\n")
-            
-            
-            
-            
+            move = input("Choose a position: (Format: 1A, 2B, 3C, etc.)\n")    
             moveSplit = [char for char in move]
             index, index2 = int(moveSplit[0]) - 1, int(ord(str(moveSplit[1]).upper()) - 65)
             
             if len(moveSplit) > 2 or (index > 2 or index2 > 2) or (index < 0 or index2 < 0):
                 raise TypeError
-            
+            if board[index][index2] != ' ':
+                raise SpaceFilledError
         
             return [index, index2]
         except (IndexError, TypeError, UnboundLocalError, ValueError):
             print("Invalid input. Try again.")
             get_player_move()
-    
+        except SpaceFilledError:
+            print("Invalid move space! Try again.")
+            get_player_move
 
 # Function to update the game board
 def update_board(board, move, player):
@@ -78,7 +80,7 @@ def main():
     
     while True:
         display_board(board)
-        move = get_player_move()
+        move = get_player_move(board)
         update_board(board, move, current_player)
         
         if check_winner(board, current_player):

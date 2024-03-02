@@ -56,7 +56,6 @@ def check_winner(board, player):
     # All 3 Diagonal
     if all(board[i][i] == str(player) for i in range(3)) or all(board[i][2-i] == str(player) for i in range(3)):
         return True
-        
     
     return False     
 
@@ -74,6 +73,7 @@ def check_tie(board):
         return True
     return False
 
+# Main Game!
 def main():
     board = [[' ', ' ', ' '], [' ', ' ', ' '], [' ', ' ', ' ']]
     current_player = 'X'
@@ -94,7 +94,6 @@ def main():
             
         current_player = 'O' if current_player == 'X' else 'X'
         print(f'\nPlayer\'s {current_player} turn!')
-        
         
     play_again = input("Do you want to play again? (y/n)")
     if play_again.lower() == 'y':

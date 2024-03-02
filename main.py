@@ -1,149 +1,103 @@
-import random 
-    
-grid = [
-        [1], [1], [1],
-        [1], [], [1],
-        [1], [1], [1]
-    ]            
 
-def coordToIndex(position, index = -1):
+# Function to display the game board
+def display_board(board):
+    # [[' ', ' ', ' '], [' ', ' ', ' '], [' ', ' ', ' ']]
     
-    if index == -1:
-        pos = [*position]
-        number, letter = int(pos[1]), pos[0]
-        if number == 1:
-            if letter == "A": return 0
-            if letter == "B": return 1
-            if letter == "C": return 2
-        if number == 2:
-            if letter == "A": return 3
-            if letter == "B": return 4
-            if letter == "C": return 5
-        if number == 3:
-            if letter == "A": return 6
-            if letter == "B": return 7
-            if letter == "C": return 8        
-        else:
-            return print("Invalid Coordinate Provided.")
-        
-    # Index to Position
-    else:
-        # Letter, Number
-        row = chr(ord('A') + index // 3)
-        col = str(index % 3 + 1)
-        print(f'{row}{col}')
-
-        return f'{row}{col}'
-    
-    
-# Turn 0 -> Player 1
-# Turn 1 -> Player 2           
-def layout(turnSymbol, position):
-    
-    index = coordToIndex(position)
-        
-    for x in range(10):
-        if x == 0:
-            print("\t\tA\tB\tC")
-        if x > 0 and x < 4:
-            if x == 2:
-                if index == 0:
-                    print(f'\t1\t{turnSymbol}   |\t    |\t') 
-                elif index == 1:
-                    print(f'\t1\t    |\t{turnSymbol}   |\t')
-                elif index == 2:
-                    print(f'\t1\t    |\t    |\t{turnSymbol}')
-                else:
-                    print("\t1\t    |\t    |\t")
-            else:   
-                print("\t\t    |\t    |\t")
-        if x > 3 and x < 7:
-            a1format = "\t    |\t    |\t"
-            if x == 5:
-                if index == 3:
-                    print(f'\t2\t{turnSymbol}   |\t    |\t') 
-                elif index == 4:
-                    print(f'\t2\t    |\t{turnSymbol}   |\t')
-                elif index == 5:
-                    print(f'\t2\t    |\t    |\t{turnSymbol}')
-                else:
-                    print("\t2\t    |\t    |\t")
-            else:   
-                print(f'\t{a1format}')
-        if x > 6 and x < 10:
-            a1format = "\t    |\t    |\t"
-            if x == 8:
-                if index == 6:
-                    print(f'\t3\t{turnSymbol}   |\t    |\t') 
-                elif index == 7:
-                    print(f'\t3\t    |\t{turnSymbol}   |\t')
-                elif index == 8:
-                    print(f'\t3\t    |\t    |\t{turnSymbol}')
-                else:
-                    print("\t3\t    |\t    |\t")
-            else:   
-                print(f'\t{a1format}')
-        if x == 3 or x == 6:
+    print("\t\tA\tB\tC")
+    form = "\t\t    |\t    |\t"
+    for i, row in enumerate(board):
+        print(form)
+        print(f'\t{i + 1}\t{row[0]}   |\t{row[1]}   |\t{row[2]}')
+        print(form)
+        if i < 2:
             print("\t     -----------------------")
-            
-        # ⭕ 🔴 🔵
-        # ⛌ ❌❎ ✘
+    pass
 
-def generatedPosition(board):
-    num = random.randint(0, 8)
-    if len(board[num]) > 0:
-        return generatedPosition(board)
-    elif len(board[num]) == 0:
-        return str(coordToIndex("AA", num))
-
-while True:
-    print("Hello! Are you playing solo or duo?")
-    print("- \'1\' Solo")
-    print("- \'2\' Duo")
-    
-    while True:      
+# Function to get player's move
+def get_player_move():
+    while True:
         try:
-            gamemode = int(input())
-            if gamemode == 1 or gamemode == 2:
-                break
-            raise ValueError()
-        except ValueError:
-            print(f'Gamemode: \'{gamemode}\' is not any of the available gamemodes! Please try again.')
-            continue
-        
-    print()
-    
-    # TODO: Playing duo?
-    
-    # Playing Solo!
-    if gamemode == 1:
-        print("Would you like to go first, or randomize?")
-        print("- \'1\' Me First")
-        print("- \'2\' Computer First")
-        print("- \'3\' Randomize")
-        
-        
-        while True:      
-            try:
-                choice = int(input())
-                options = [1, 2, 3]
-                if choice in options:
-                    break
-                raise ValueError()
-            except ValueError:
-                print(f'Choice: \'{choice}\' is not any of the available options! Please try again.')
-                continue
-        
-        # TODO: Computer first and Randomizer
-        
-        #if choice == 1:
+            move = input("Choose a position: (Format: 1A, 2B, 3C, etc.)\n")
+            
+            
+            
+            
+            moveSplit = [char for char in move]
+            index, index2 = int(moveSplit[0]) - 1, int(ord(str(moveSplit[1]).upper()) - 65)
+            
+            if len(moveSplit) > 2 or (index > 2 or index2 > 2) or (index < 0 or index2 < 0):
+                raise TypeError
             
         
-        
-        break
+            return [index, index2]
+        except (IndexError, TypeError, UnboundLocalError, ValueError):
+            print("Invalid input. Try again.")
+            get_player_move()
+    
 
+# Function to update the game board
+def update_board(board, move, player):
+    board[move[0]][move[1]] = player
+    pass
+
+# Function to check if there is a winner
+def check_winner(board, player):
     
+    # All 3 across
+    if any(all(cell == str(player) for cell in row) for row in board):
+        return True
     
-    # TODO: Player win conditions
-                
-#layout("X", "C2")
+    # All 3 down
+    if all(row[0] == str(player) for row in board):
+        return True
+    
+    # All 3 Diagonal
+    if all(board[i][i] == str(player) for i in range(3)) or all(board[i][2-i] == str(player) for i in range(3)):
+        return True
+        
+    
+    return False     
+
+# Function to check if the board is full
+def check_full(board):
+    for row in board:
+        for cell in row:
+            if cell == ' ':
+                return False
+    return True   
+
+# Function to check if the game is a tie
+def check_tie(board):
+    if check_full(board) and not check_winner(board, 'X') and not check_winner(board, 'O'):
+        return True
+    return False
+
+def main():
+    board = [[' ', ' ', ' '], [' ', ' ', ' '], [' ', ' ', ' ']]
+    current_player = 'X'
+    
+    while True:
+        display_board(board)
+        move = get_player_move()
+        update_board(board, move, current_player)
+        
+        if check_winner(board, current_player):
+            display_board(board)
+            print(f'Player {current_player} wins!')
+            break
+        elif check_tie(board):
+            display_board(board)
+            print("It's a tie!")
+            break
+            
+        current_player = 'O' if current_player == 'X' else 'X'
+        print(f'\nPlayer\'s {current_player} turn!')
+        
+        
+    play_again = input("Do you want to play again? (y/n)")
+    if play_again.lower() == 'y':
+        main()
+    else: print("Thanks for playing!")
+        
+if __name__ == "__main__":
+    main()
